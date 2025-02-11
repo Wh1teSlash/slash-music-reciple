@@ -1,6 +1,9 @@
-# Reciple App
+# Slash Music Rewrite
 
-This project is generated with [`create-reciple`](https://npmjs.org/package/create-reciple)
+- [X] Setup reciple app
+- [ ] Add any music library configuration
+- [ ] Add basic commands like play, stop and etc.
+- [ ] Make an advanced queue system with redis backups
 
 ## Developing
 
