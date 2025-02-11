@@ -7,8 +7,8 @@
 
 # Deploying
 
-- [] Add docker support
-- [] Add github workflows
+- [ ] Add docker support
+- [ ] Add github workflows
 
 If your want to learn reciple, refer to these websites:
 
