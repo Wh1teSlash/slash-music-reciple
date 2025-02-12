@@ -1,3 +1,4 @@
+import { env } from "@/Env.js";
 import type {
 	CommandPreconditionData,
 	ContextMenuCommandExecuteData,
@@ -6,7 +7,7 @@ import type {
 } from "reciple";
 
 const devUserIds: string[] =
-	process.env.DEVELOPER_IDS?.split(",").map((id) => id.trim()) ?? [];
+	env.DEV_USERS.map((id) => id.trim()) ?? [];
 
 export class DeveloperPrecondition implements CommandPreconditionData {
 	id = "my.reciple.js.developerprecondition";

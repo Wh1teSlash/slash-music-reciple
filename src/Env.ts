@@ -5,7 +5,8 @@ export const env = createEnv({
     server: {
         TOKEN: z.string(),
         APP_ID: z.string(),
-        DEVELOPER_IDS: z.string().array(),
+        DEV_USERS: z.string().array(),
+        DEV_GUILDS: z.string().array(),
         DB_USER: z.string(),
         DB_PASS: z.string(),
         DB_HOST: z.string(),
@@ -20,7 +21,8 @@ export const env = createEnv({
 
     runtimeEnvStrict: {
         TOKEN: process.env.TOKEN,
-        DEVELOPER_IDS: process.env.DEVELOPER_ID,
+        DEV_USERS: process.env.DEV_USERS,
+        DEV_GUILDS: process.env.DEV_GUILDS,
         APP_ID: process.env.APP_ID,
         DB_USER: process.env.DB_USER,
         DB_PASS: process.env.DB_PASS,
