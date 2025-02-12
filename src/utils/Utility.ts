@@ -5,8 +5,9 @@ import type {
 	RecipleModuleStartData,
 } from "reciple";
 import { drizzle } from "drizzle-orm/node-postgres";
-import { Pool } from "pg";
-import * as schema from "../database/schema.js";
+import pkg from "pg";
+const { Pool } = pkg;
+import * as schema from "../database/Schema.js";
 import {
 	ButtonBuilder,
 	ButtonStyle,
@@ -14,24 +15,47 @@ import {
 	type GuildTextBasedChannelTypes,
 	inlineCode,
 } from "discord.js";
+import { LavalinkManager } from "lavalink-client";
+import { env } from "@/Env.js";
 
 export class Utility implements RecipleModuleData {
 	public embedColor = "Blurple";
 	public database!: ReturnType<typeof drizzle>;
 	public client!: RecipleClient<true>;
+	public lavalink!: LavalinkManager;
 
 	public async onStart({ client }: RecipleModuleStartData): Promise<boolean> {
 		this.client = client as RecipleClient<true>;
 
 		const pool = new Pool({
-			host: this.getEnvVariable("DB_HOST"),
-			port: Number(this.getEnvVariable("DB_PORT")),
-			user: this.getEnvVariable("DB_USER"),
-			password: this.getEnvVariable("DB_PASS"),
-			database: this.getEnvVariable("DB_NAME"),
+			host: env.DB_HOST,
+			port: env.DB_PORT,
+			user: env.DB_USER,
+			password: env.DB_PASS,
+			database: env.DB_HOST,
 		});
 
 		this.database = drizzle(pool, { schema });
+
+		this.lavalink = new LavalinkManager({
+			nodes: [
+				{
+					authorization: "youshallnotpass",
+					host: "doxbit.ru",
+					port: 2333,
+					secure: false,
+					id: "testnode",
+				},
+			],
+			sendToShard: (guildId, payload) => this.client.guilds.cache.get(guildId)?.shard?.send(payload),
+			autoSkip: true,
+			client: {
+				id: env.APP_ID,
+				username: "SlashMusic",
+			},
+		});
+
+		this.client.on("raw", d => this.lavalink.sendRawData(d));
 
 		return true;
 	}
@@ -40,6 +64,15 @@ export class Utility implements RecipleModuleData {
 		this.client.rest.on("rateLimited", async (info) =>
 			this.client.logger?.warn("Ratelimited!", info),
 		);
+
+		this.lavalink.init({
+			id: this.client.user.id,
+			username: this.client.user.username
+		}).then(() => {
+			this.lavalink.nodeManager.on("create", (node) => {
+				this.client.logger?.info(`The Lavalink Node #${node.id} connected`);
+			});
+		})
 	}
 
 	public getGuildTextBasedChannelTypes(): GuildTextBasedChannelTypes[] {
@@ -63,14 +96,6 @@ export class Utility implements RecipleModuleData {
 			.setURL(
 				typeof urlResolvable === "string" ? urlResolvable : urlResolvable.url,
 			);
-	}
-
-	public getEnvVariable(key: string): string {
-		const value = process.env[key];
-		if (typeof value !== "string" || value.trim() === "") {
-			throw new Error(`Environment variable ${key} is not set or is empty.`);
-		}
-		return value;
 	}
 
 	public createErrorMessage(message: string): string {

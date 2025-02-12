@@ -2,7 +2,7 @@
 import { CooldownPrecondition, CommandPermissionsPrecondition } from 'reciple';
 import { IntentsBitField } from 'discord.js';
 import { CommandErrorHalt } from './modules/halts/CommandErrorHalt.js';
-import { ExamplePrecondition } from './modules/preconditions/ExamplePrecondition.js';
+import { DeveloperPrecondition } from './modules/preconditions/DeveloperPrecondition.js';
 
 /**
  * @satisfies {import('reciple').RecipleConfig}
@@ -28,7 +28,7 @@ export const config = {
             // Character that separates the command arguments in message commands
             commandArgumentSeparator: ' ',
             // Prefix that will trigger a certain message commands
-            prefix: '!'
+            prefix: '?'
         },
         slashCommand: {
             enabled: true,
@@ -77,7 +77,7 @@ export const config = {
         // Directories to load modules from
         dirs: ['./modules', './modules/*', './modules/*/*'],
         // Directories to exclude from loading modules
-        exclude: ['./modules/halts', './modules/preconditions', './modules/_*'],
+        exclude: ['./modules/halts', './modules/preconditions', './modules/_*', './modules/database', 'Env'],
         // Custom filter for loading modules
         filter: file => true,
         // Disable module version check when loading modules
@@ -86,7 +86,7 @@ export const config = {
     preconditions: [
         new CooldownPrecondition(),
         new CommandPermissionsPrecondition(),
-        new ExamplePrecondition(),
+        new DeveloperPrecondition(),
     ],
     commandHalts: [
         new CommandErrorHalt(),
@@ -98,6 +98,7 @@ export const config = {
     // Announce reciple updates when the bot starts
     checkForUpdates: true,
     // The version of the CLI that was used to generate the project
+    // biome-ignore lint/style/noUnusedTemplateLiteral: <explanation>
     version: `^9.8.0`
 };
 

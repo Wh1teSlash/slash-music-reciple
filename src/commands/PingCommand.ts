@@ -1,7 +1,6 @@
 import {
 	type AnyCommandExecuteData,
 	CommandType,
-	ContextMenuCommandBuilder,
 	MessageCommandBuilder,
 	type RecipleModuleData,
 	SlashCommandBuilder,
@@ -10,10 +9,6 @@ import {
 
 export class PingCommand implements RecipleModuleData {
 	public commands: AnyCommandResolvable[] = [
-		new ContextMenuCommandBuilder()
-			.setName("ping")
-			.setType("Message")
-			.setExecute((data) => this.handleCommandExecute(data)),
 		new MessageCommandBuilder()
 			.setName("ping")
 			.setDescription("Replies with pong!")
@@ -34,19 +29,18 @@ export class PingCommand implements RecipleModuleData {
 	/**
 	 * Executes when the module is loaded (Bot is logged in).
 	 */
-	async onLoad(): Promise<void> {}
+	async onLoad(): Promise<void> { }
 
 	/**
 	 * Executes when the module is unloaded (Bot is pre log out).
 	 */
-	async onUnload(): Promise<void> {}
+	async onUnload(): Promise<void> { }
 
 	/**
 	 * Sets the commands
 	 */
 	async handleCommandExecute(data: AnyCommandExecuteData): Promise<void> {
 		switch (data.type) {
-			case CommandType.ContextMenuCommand:
 			case CommandType.SlashCommand:
 				await data.interaction.reply("Pong!");
 				return;
